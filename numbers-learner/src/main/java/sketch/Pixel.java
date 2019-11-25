@@ -12,8 +12,8 @@ public final class Pixel {
 
     Pixel(PApplet sketch, int x, int y, int length) {
         this.sketch = sketch;
-        this.x = x * length;
-        this.y = y * length;
+        this.x = x;
+        this.y = y;
         this.length = length;
     }
 
@@ -31,7 +31,7 @@ public final class Pixel {
         } else {
             sketch.fill(255);
         }
-        sketch.rect(x, y, length, length);
+        sketch.rect(x * length, y * length, length, length);
     }
 
     public Pixel switchState() {
