@@ -17,7 +17,7 @@ public final class Pixel {
         this.length = length;
     }
 
-    private boolean isFilled() {
+    boolean isFilled() {
         return filled;
     }
 

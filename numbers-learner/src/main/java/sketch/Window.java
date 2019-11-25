@@ -1,6 +1,7 @@
 package sketch;
 
-import perceptron.Examples;
+import perceptron.ExampleNumber;
+import perceptron.Perceptron;
 import processing.core.PApplet;
 
 import java.util.ArrayList;
@@ -16,8 +17,11 @@ public class Window extends PApplet {
     private Button learnButton;
     private List<Pixel> pixelList;
     private int[] filledPixels = new int[35];
+    private Perceptron perceptron;
+    private ExampleNumber exampleNumber;
 
     public void settings() {
+        perceptron = new Perceptron();
         pixelList = new ArrayList<>();
         size(WIDTH * LENGTH + 200, HEIGHT * LENGTH);
         clearButton = new Button(this,controlPanelEdge() + 75, 100, 160, 50, color(255), color(255, 0, 0), "Clear");
@@ -32,17 +36,11 @@ public class Window extends PApplet {
     public void draw() {
         clearButton.display();
         learnButton.display();
-        if (mousePressed && clearButton.mouseOver()) {
-            clearBoard();
-        }
-        if (mousePressed && learnButton.mouseOver()) {
-            System.out.println(Arrays.toString(filledPixels));
-        }
     }
 
     private void generateBoard() {
-        for (int i = 0; i < HEIGHT; i++) {
-            for (int j = 0; j < WIDTH; j++) {
+        for (var i = 0; i < HEIGHT; i++) {
+            for (var j = 0; j < WIDTH; j++) {
                 pixelList.add(new Pixel(this, j, i, LENGTH));
             }
         }
@@ -51,8 +49,17 @@ public class Window extends PApplet {
     public void mousePressed() {
         if (!clearButton.mouseOver() && !learnButton.mouseOver()) {
             var pixel = chosenPixel().switchState();
-            filledPixels[pixelNumber()] = 1;
+            if (pixel.isFilled()) {
+                filledPixels[pixelNumber()] = 1;
+            } else {
+                filledPixels[pixelNumber()] = 0;
+            }
             pixel.display();
+        } else if (learnButton.mouseOver()) {
+            System.out.println(Arrays.toString(filledPixels));
+            perceptron.train(filledPixels, perceptron.randomExample().getNumber());
+        } else if (clearButton.mouseOver()) {
+            clearBoard();
         }
     }
 

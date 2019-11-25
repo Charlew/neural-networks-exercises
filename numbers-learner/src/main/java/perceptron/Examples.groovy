@@ -1,7 +1,7 @@
 package perceptron
 
 class Examples {
-    static def inputs = List.of(
+    static List<ExampleNumber> inputs = List.of(
             new ExampleNumber(0, [1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1] as int),
             new ExampleNumber(0, [1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1] as int),
             new ExampleNumber(1, [0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0] as int),
@@ -29,7 +29,7 @@ class Examples {
 
 class ExampleNumber {
 
-    def number;
+    int number;
     int[] representation
 
     ExampleNumber(number, int[] representation) {
