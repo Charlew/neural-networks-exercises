@@ -1,6 +1,5 @@
 package perceptron;
 
-import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -10,7 +9,7 @@ public class Perceptron {
     private static float LEARNING_RATE = (float) 0.1;
 
     public Perceptron() {
-        Arrays.stream(this.weights).forEach(weight -> getRandomNumberInRange(-1, 1));
+        IntStream.range(0, weights.length).forEach(i -> weights[i] = getRandomNumberInRange(-1, 1));
     }
 
     public int[] getWeights() {
@@ -27,11 +26,14 @@ public class Perceptron {
         var guess = guess(inputs);
         var error = target - guess;
 
-        IntStream.range(0, weights.length).forEach(i -> weights[i] += error * inputs[i] * LEARNING_RATE);
+        for (int i = 0; i < weights.length; i++) {
+            weights[i] += error * inputs[i] * LEARNING_RATE;
+        }
     }
 
-    private int guess(int[] inputs) {
+    public int guess(int[] inputs) {
         var sum = IntStream.range(0, weights.length).map(i -> inputs[i] * weights[i]).sum();
+
         return (int) Math.signum(sum);
     }
 
