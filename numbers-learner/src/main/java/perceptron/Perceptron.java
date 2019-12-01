@@ -10,41 +10,40 @@ public class Perceptron {
 
     public Perceptron() {
         IntStream.range(0, weights.length).forEach(i -> weights[i] = getRandomNumberInRange(-1, 1));
+        threshold = getRandomNumberInRange(-1, 1);
+
+    }
+
+    public int[] getWeights() {
+        return weights;
     }
 
     public ExampleNumber randomExample(int from, int to) {
-        var examples = Examples.getInputs();
+        var examples = Examples.inputs;
         var number = getRandomNumberInRange(from, to);
         return examples.get(number);
     }
 
-    public void train(int from) {
+    public void train(int numberOfExample) {
         for (int i = 0; i < MAX_ITERATIONS; i++) {
-            var example = Examples.getInputs().get(from);
-            var inputs = example.getRepresentation();
-            var target = example.getNumber();
-            var guess = guess(inputs);
-            var error = target - guess;
+            var example = Examples.inputs.get(numberOfExample);
+            var exampleRepresentation = example.getRepresentation();
+            var exampleTarget = example.getNumber();
+            var guess = guess(exampleRepresentation);
+            var error = exampleTarget - guess;
+
+            System.out.println(exampleTarget);
 
             if (error == 0) {
-                   // continue
-                System.out.println(from);
+                // continue
+//                System.out.println(exampleTarget);
             } else {
-                improve(example);
+                for (int j = 0; j < weights.length; j++) {
+                    weights[j] += LEARNING_RATE * error * exampleRepresentation[j];
+                }
+                threshold -= LEARNING_RATE * error;
             }
         }
-    }
-
-    private void improve(ExampleNumber example) {
-        var target = example.getNumber();
-        var inputs = example.getRepresentation();
-        var guess = guess(inputs);
-        var error = target - guess;
-
-        for (int j = 0; j < weights.length; j++) {
-            weights[j] += LEARNING_RATE * error * inputs[j];
-        }
-        threshold -= LEARNING_RATE * error;
     }
 
     public int guess(int[] inputs) {
