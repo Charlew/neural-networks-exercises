@@ -3,6 +3,7 @@ package sketch;
 import perceptron.Perceptron;
 import processing.core.PApplet;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,9 @@ public class Window extends PApplet {
     private List<Perceptron> perceptrons = new ArrayList<>(10);
 
     public void settings() {
+        for (int i = 0; i < 10; i++) {
+            perceptrons.add(new Perceptron());
+        }
         pixelList = new ArrayList<>();
         size(WIDTH * LENGTH + 200, HEIGHT * LENGTH);
         clearButton = new Button(this,controlPanelEdge() + 75, 100, 160, 50, color(255), color(255, 0, 0), "Clear");
@@ -55,24 +59,20 @@ public class Window extends PApplet {
             }
             pixel.display();
         } else if (learnButton.mouseOver()) {
-            for (int i = 0; i < 9; i++) {
+            System.out.println("Training started at " + LocalTime.now());
 
-                perceptrons.get(i).train(i);
+            for (int i = 0; i < perceptrons.size(); i++) {
+                perceptrons.get(i).setId(i);
+                perceptrons.get(i).train(i * 2, i * 2 + 1);
             }
 
-//            new Perceptron().train(0, 1),
-//                    new Perceptron().train(2, 3),
-//                    new Perceptron().train(4, 5),
-//                    new Perceptron().train(6, 7),
-//                    new Perceptron().train(8, 9),
-//                    new Perceptron().train(10, 11),
-//                    new Perceptron().train(12, 13),
-//                    new Perceptron().train(14, 15),
-//                    new Perceptron().train(16, 17),
-//                    new Perceptron().train(18, 19)
-
+            System.out.println("Training finished at " + LocalTime.now());
         } else if (guessButton.mouseOver()) {
-            perceptrons.forEach(perceptron -> perceptron.guess(filledPixels));
+            perceptrons.forEach(perceptron -> {
+                if (perceptron.guess(filledPixels) == 1) {
+                    System.out.println(perceptron.getId());
+                }
+            });
         } else if (clearButton.mouseOver()) {
             clearBoard();
         }
