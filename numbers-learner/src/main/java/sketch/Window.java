@@ -1,6 +1,5 @@
 package sketch;
 
-import perceptron.ExampleNumber;
 import perceptron.Perceptron;
 import processing.core.PApplet;
 
@@ -18,7 +17,6 @@ public class Window extends PApplet {
     private List<Pixel> pixelList;
     private int[] filledPixels = new int[35];
     private Perceptron perceptron;
-    private ExampleNumber exampleNumber;
 
     public void settings() {
         perceptron = new Perceptron();
@@ -56,8 +54,15 @@ public class Window extends PApplet {
             }
             pixel.display();
         } else if (learnButton.mouseOver()) {
-            System.out.println(Arrays.toString(filledPixels));
-            perceptron.train(filledPixels, perceptron.randomExample().getNumber());
+//            System.out.println(Arrays.toString(filledPixels));
+            perceptron.train(0); // 0
+            perceptron.train(1); // 0
+            perceptron.train(2); // 1
+            perceptron.train(3); // 1
+            perceptron.train(4); // 2
+            perceptron.train(5); // 2
+            perceptron.train(6); // 3
+            perceptron.train(7); // 3
         } else if (clearButton.mouseOver()) {
             clearBoard();
         }
