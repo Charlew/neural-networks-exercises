@@ -3,9 +3,10 @@ package sketch;
 import perceptron.Perceptron;
 import processing.core.PApplet;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Window extends PApplet {
 
@@ -20,9 +21,7 @@ public class Window extends PApplet {
     private List<Perceptron> perceptrons = new ArrayList<>(10);
 
     public void settings() {
-        for (int i = 0; i < 10; i++) {
-            perceptrons.add(new Perceptron());
-        }
+        IntStream.range(0, 10).forEach(i -> perceptrons.add(new Perceptron(this, i)));
         pixelList = new ArrayList<>();
         size(WIDTH * LENGTH + 200, HEIGHT * LENGTH);
         clearButton = new Button(this,controlPanelEdge() + 75, 100, 160, 50, color(255), color(255, 0, 0), "Clear");
@@ -51,31 +50,28 @@ public class Window extends PApplet {
 
     public void mousePressed() {
         if (!clearButton.mouseOver() && !learnButton.mouseOver() && !guessButton.mouseOver()) {
-            var pixel = chosenPixel().switchState();
-            if (pixel.isFilled()) {
-                filledPixels[pixelNumber()] = 1;
-            } else {
-                filledPixels[pixelNumber()] = 0;
-            }
-            pixel.display();
+            fillPixel();
         } else if (learnButton.mouseOver()) {
-            System.out.println("Training started at " + LocalTime.now());
-
-            for (int i = 0; i < perceptrons.size(); i++) {
-                perceptrons.get(i).setId(i);
-                perceptrons.get(i).train(i * 2, i * 2 + 1);
-            }
-
-            System.out.println("Training finished at " + LocalTime.now());
+            perceptrons.forEach(Perceptron::train);
         } else if (guessButton.mouseOver()) {
+            System.out.println("==============================================");
             perceptrons.forEach(perceptron -> {
                 if (perceptron.guess(filledPixels) == 1) {
                     System.out.println(perceptron.getId());
                 }
             });
+            System.out.println("==============================================");
         } else if (clearButton.mouseOver()) {
             clearBoard();
         }
+    }
+
+    private void fillPixel() {
+        var pixel = chosenPixel().switchState();
+
+        filledPixels[pixelNumber()] = pixel.isFilled() ? 1 : 0;
+
+        pixel.display();
     }
 
     private Pixel chosenPixel() {
@@ -91,14 +87,11 @@ public class Window extends PApplet {
     }
 
     private void clearBoard() {
+        Arrays.fill(filledPixels, 0);
         pixelList.forEach(Pixel::clear);
     }
 
     private int controlPanelEdge() {
         return (WIDTH * LENGTH) - (LENGTH / 2);
-    }
-
-    public int[] getFilledPixels() {
-        return filledPixels;
     }
 }

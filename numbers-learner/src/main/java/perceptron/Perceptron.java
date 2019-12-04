@@ -2,64 +2,79 @@ package perceptron;
 
 import java.util.stream.IntStream;
 
+import processing.core.PApplet;
+
 public class Perceptron {
 
-    private int id;
-    private int[] weights = new int[35];
-    private int threshold;
-    private static final float LEARNING_RATE = (float) 0.1;
-    private static final int MAX_ITERATIONS = 300;
+    private final PApplet sketch;
+    private final int id;
+    private float[] weights = new float[35];
+    private float threshold;
+    private static final float LEARNING_RATE = 0.01f;
+    private static final int MAX_ITERATIONS = 3000;
 
-    public Perceptron() {
-        IntStream.range(0, weights.length).forEach(i -> weights[i] = randomNumberInRange(-1, 1));
-        threshold = randomNumberInRange(-1, 1);
+    public Perceptron(PApplet sketch, int id) {
+        this.sketch = sketch;
+        this.id = id;
+        IntStream.range(0, weights.length).forEach(i -> weights[i] = sketch.random(-1, 1));
+        threshold = sketch.random(-1, 1);
     }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public ExampleNumber randomExample(int from, int to) {
+    public ExampleNumber randomExample() {
         var examples = Examples.inputs;
-        var number = randomNumberInRange(from, to);
+        var number = (int) sketch.random(0, examples.size());
         return examples.get(number);
     }
 
-    public void train(int from, int to) {
+    public void train() {
+        var maxCounter = 0;
+        var counter = 0;
         for (int i = 0; i < MAX_ITERATIONS; i++) {
-            var example = randomExample(from, to);
+            var example = randomExample();
             var exampleRepresentation = example.getRepresentation();
-            var exampleTarget = example.getNumber();
+            var target = example.getNumber() == id ? 1 : -1;
             var guess = guess(exampleRepresentation);
-            var error = exampleTarget - guess;
+            var error = target - guess;
 
             if (error == 0) {
-                // continue
-            } else {
-                for (int j = 0; j < weights.length; j++) {
-                    weights[j] += LEARNING_RATE * error * exampleRepresentation[j];
+                //
+                counter++;
+                if (counter > maxCounter) {
+//                    var tmpWeights = new float[35];
+                    maxCounter = counter;
                 }
-                threshold -= LEARNING_RATE * error;
+            } else {
+                improve(exampleRepresentation, error);
+            }
+
+        }
+        for (int i = 0; i < Examples.inputs.size(); i++) {
+            int result = guess(Examples.inputs.get(i).getRepresentation());
+            var target = Examples.inputs.get(i).getNumber() == id ? 1 : -1;
+
+            if (result == target) {
+                counter++;
             }
         }
+        System.out.println("Perceptron with id = " + id + " guess " + counter + "/" + Examples.inputs.size() + " examples");
+    }
+
+    private void improve(int[] exampleRepresentation, int error) {
+        for (int j = 0; j < weights.length; j++) {
+            weights[j] += LEARNING_RATE * error * exampleRepresentation[j];
+        }
+        threshold -= LEARNING_RATE * error;
     }
 
     public int guess(int[] inputs) {
         var sum = IntStream.range(0, weights.length)
-                .map(i -> inputs[i] * weights[i])
-                .sum();
+            .map(i -> (int) (inputs[i] * weights[i]))
+            .sum();
 
         return (int) Math.signum(sum - threshold);
-    }
-
-    private static int randomNumberInRange(int min, int max) {
-        if (min >= max) {
-            throw new IllegalArgumentException("max must be greater than min");
-        }
-        return (int) (Math.random() * ((max - min) + 1)) + min;
     }
 }
