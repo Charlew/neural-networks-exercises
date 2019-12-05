@@ -1,5 +1,6 @@
 package perceptron;
 
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 import processing.core.PApplet;
@@ -46,14 +47,14 @@ public class Perceptron {
                 counter++;
                 if (counter > maxCounter) {
                     maxCounter = counter;
-                    pocket = weights.clone();
+                    pocket = Arrays.copyOf(weights, weights.length);
                 }
             } else {
                 counter = 0;
                 improve(exampleRepresentation, error);
             }
         }
-        weights = pocket.clone();
+        weights = Arrays.copyOf(pocket, pocket.length);
         showLearningProcess();
     }
 
