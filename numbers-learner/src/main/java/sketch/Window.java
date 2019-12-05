@@ -18,9 +18,10 @@ public class Window extends PApplet {
     private Button guessButton;
     private List<Pixel> pixelList;
     private int[] filledPixels = new int[35];
-    private List<Perceptron> perceptrons = new ArrayList<>(10);
+    private List<Perceptron> perceptrons;
 
     public void settings() {
+        perceptrons  = new ArrayList<>(10);
         IntStream.range(0, 10).forEach(i -> perceptrons.add(new Perceptron(this, i)));
         pixelList = new ArrayList<>();
         size(WIDTH * LENGTH + 200, HEIGHT * LENGTH);
@@ -38,6 +39,7 @@ public class Window extends PApplet {
         clearButton.display();
         learnButton.display();
         guessButton.display();
+        fillPixel();
     }
 
     private void generateBoard() {
@@ -49,9 +51,7 @@ public class Window extends PApplet {
     }
 
     public void mousePressed() {
-        if (!clearButton.mouseOver() && !learnButton.mouseOver() && !guessButton.mouseOver()) {
-            fillPixel();
-        } else if (learnButton.mouseOver()) {
+        if (learnButton.mouseOver()) {
             perceptrons.forEach(Perceptron::train);
         } else if (guessButton.mouseOver()) {
             System.out.println("==============================================");
@@ -67,11 +67,25 @@ public class Window extends PApplet {
     }
 
     private void fillPixel() {
-        var pixel = chosenPixel().switchState();
+        if (clearButton.mouseOver() || learnButton.mouseOver() || guessButton.mouseOver()) {
+            return;
+        }
 
+        if (mouseButton == LEFT && mousePressed) {
+            var pixel = chosenPixel().fillPixel();
+            setPixelState(pixel);
+            pixel.display();
+        }
+
+        if (mouseButton == RIGHT && mousePressed) {
+            var pixel = chosenPixel().clearPixel();
+            setPixelState(pixel);
+            pixel.display();
+        }
+    }
+
+    private void setPixelState(Pixel pixel) {
         filledPixels[pixelNumber()] = pixel.isFilled() ? 1 : 0;
-
-        pixel.display();
     }
 
     private Pixel chosenPixel() {

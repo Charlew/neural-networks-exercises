@@ -1,5 +1,6 @@
 package perceptron;
 
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 import processing.core.PApplet;
@@ -9,6 +10,7 @@ public class Perceptron {
     private final PApplet sketch;
     private final int id;
     private float[] weights = new float[35];
+    private float[] pocket = new float[35];
     private float threshold;
     private static final float LEARNING_RATE = 0.01f;
     private static final int MAX_ITERATIONS = 3000;
@@ -33,6 +35,7 @@ public class Perceptron {
     public void train() {
         var maxCounter = 0;
         var counter = 0;
+
         for (int i = 0; i < MAX_ITERATIONS; i++) {
             var example = randomExample();
             var exampleRepresentation = example.getRepresentation();
@@ -41,26 +44,18 @@ public class Perceptron {
             var error = target - guess;
 
             if (error == 0) {
-                //
                 counter++;
                 if (counter > maxCounter) {
-//                    var tmpWeights = new float[35];
                     maxCounter = counter;
+                    pocket = Arrays.copyOf(weights, weights.length);
                 }
             } else {
+                counter = 0;
                 improve(exampleRepresentation, error);
             }
-
         }
-        for (int i = 0; i < Examples.inputs.size(); i++) {
-            int result = guess(Examples.inputs.get(i).getRepresentation());
-            var target = Examples.inputs.get(i).getNumber() == id ? 1 : -1;
-
-            if (result == target) {
-                counter++;
-            }
-        }
-        System.out.println("Perceptron with id = " + id + " guess " + counter + "/" + Examples.inputs.size() + " examples");
+        weights = Arrays.copyOf(pocket, pocket.length);
+        showLearningProcess();
     }
 
     private void improve(int[] exampleRepresentation, int error) {
@@ -76,5 +71,18 @@ public class Perceptron {
             .sum();
 
         return (int) Math.signum(sum - threshold);
+    }
+
+    private void showLearningProcess() {
+        var iterator = 0;
+        for (int i = 0; i < Examples.inputs.size(); i++) {
+            int result = guess(Examples.inputs.get(i).getRepresentation());
+            var target = Examples.inputs.get(i).getNumber() == id ? 1 : -1;
+
+            if (result == target) {
+                iterator++;
+            }
+        }
+        System.out.println("Perceptron with id = " + id + " guess " + iterator + "/" + Examples.inputs.size() + " examples");
     }
 }

@@ -21,21 +21,18 @@ public final class Pixel {
         return filled;
     }
 
-    public void setFilled(boolean filled) {
-        this.filled = filled;
-    }
-
     void display() {
-        if (isFilled()) {
-            sketch.fill(0);
-        } else {
-            sketch.fill(255);
-        }
+        sketch.fill(isFilled() ? 0 : 255);
         sketch.rect(x * length, y * length, length, length);
     }
 
-    public Pixel switchState() {
-        filled = !filled;
+    public Pixel fillPixel() {
+        filled = true;
+        return this;
+    }
+
+    public Pixel clearPixel() {
+        filled = false;
         return this;
     }
 
