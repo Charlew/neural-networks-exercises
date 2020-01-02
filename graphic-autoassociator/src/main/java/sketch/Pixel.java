@@ -13,7 +13,7 @@ public final class Pixel {
     Pixel(PApplet sketch, int x, int y, int length) {
         this.sketch = sketch;
         this.x = x;
-        this.y = y;
+        this.y = y + 5;
         this.length = length;
     }
 
