@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import perceptron.Example;
 import perceptron.Examples;
 import perceptron.Perceptron;
 import processing.core.PApplet;
@@ -23,12 +24,13 @@ public class Window extends PApplet {
     private int[] filledPixels = new int[2500];
     private List<Perceptron> perceptrons;
     private Examples examples;
+    private List<Example> inputs;
 
     public void settings() {
         examples = new Examples();
         leftBoardPixels = new ArrayList<>();
         rightBoardPixels = new ArrayList<>();
-        var inputs = examples.loadExamplesFromFile();
+        inputs = examples.loadExamplesFromFile();
         perceptrons = new ArrayList<>(2500);
         IntStream.range(0, 2500).forEach(i -> perceptrons.add(new Perceptron(this, i, inputs)));
         size(1500, 900);
@@ -80,6 +82,16 @@ public class Window extends PApplet {
 
     private void generateLeftBoard() {
         generateMesh(leftBoardPixels, LEFT_BOARD_SHIFT);
+
+        for (int i = 0; i < leftBoardPixels.size(); i++) {
+            if (inputs.get(0).getRepresentation()[i] == 1) {
+                var pixel = leftBoardPixels.get(i).fillPixel();
+                filledPixels[i] = 1;
+                pixel.display();
+            }
+
+        }
+        System.out.println(Arrays.toString(filledPixels));
     }
 
     private void generateRightBoard() {

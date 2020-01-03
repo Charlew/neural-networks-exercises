@@ -11,4 +11,5 @@ public class Example {
     public int[] getRepresentation() {
         return representation;
     }
+    
 }
