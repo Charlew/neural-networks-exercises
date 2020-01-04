@@ -83,6 +83,8 @@ public class Window extends PApplet {
     private void generateLeftBoard() {
         generateMesh(leftBoardPixels, LEFT_BOARD_SHIFT);
 
+        // test 2
+
         for (int i = 0; i < leftBoardPixels.size(); i++) {
             if (inputs.get(0).getRepresentation()[i] == 1) {
                 var pixel = leftBoardPixels.get(i).fillPixel();
