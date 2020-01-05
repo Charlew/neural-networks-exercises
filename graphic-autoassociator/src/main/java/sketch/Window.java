@@ -22,6 +22,7 @@ public class Window extends PApplet {
     private Button removeNoiseButton;
     private Button improveButton;
     private Button previousButton;
+    private Button refreshButton;
     private Button nextButton;
     private List<Pixel> leftBoardPixels;
     private List<Pixel> rightBoardPixels;
@@ -43,6 +44,7 @@ public class Window extends PApplet {
         removeNoiseButton = new Button(this, 850, 700, 160, 50, color(255), color(255, 0, 0), "Remove noise");
         improveButton = new Button(this, 1250, 700, 160, 50, color(255), color(255, 0, 0), "Improve");
         previousButton = new Button(this, 60, 700, 160, 50, color(255), color(255, 0, 0), "Previous");
+        refreshButton = new Button(this, 280, 700, 160, 50, color(255), color(255, 0, 0), "Refresh");
         nextButton = new Button(this, 500, 700, 160, 50, color(255), color(255, 0, 0), "Next");
     }
 
@@ -57,6 +59,7 @@ public class Window extends PApplet {
         removeNoiseButton.display();
         improveButton.display();
         previousButton.display();
+        refreshButton.display();
         nextButton.display();
         fillPixelOnTheBoard();
     }
@@ -148,6 +151,11 @@ public class Window extends PApplet {
             redraw();
         }
 
+        if (refreshButton.mouseOver()) {
+            clearLeftBoard();
+            generateLeftBoard(exampleNumberOnTheBoard);
+        }
+
         if (previousButton.mouseOver()) {
             clearLeftBoard();
             if (exampleNumberOnTheBoard == 0) {
@@ -181,8 +189,8 @@ public class Window extends PApplet {
                     }
 //                }
             }
+            redraw();
         }
-        redraw();
     }
 
     private void clearRightBoardPixel(int iterator) {
