@@ -6,13 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * id = 1 -> smile
- * id = 2 -> sad
- * id = 3 -> cube
- * id = 4 -> tic tac toe
- * id = 5 ->
- */
 public class Examples {
 
     public List<Example> loadExamplesFromFile() {

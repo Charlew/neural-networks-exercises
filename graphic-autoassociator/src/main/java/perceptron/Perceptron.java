@@ -13,8 +13,8 @@ public class Perceptron {
     private float[] weights = new float[2500];
     private float[] pocket = new float[2500];
     private float threshold;
-    private static final float LEARNING_RATE = 0.01f;
-    private static final int MAX_ITERATIONS = 30_000;
+    private static final float LEARNING_RATE = 0.1f;
+    private static final int MAX_ITERATIONS = 10_000;
     private List<Example> examples;
 
     public Perceptron(PApplet sketch, int pixelId, List<Example> examples) {
@@ -30,13 +30,14 @@ public class Perceptron {
     }
 
     public Example randomExample() {
-        var number = (int) sketch.random(0, examples.size());
+        var number = (int) sketch.random(0, 5);
         return examples.get(number);
     }
 
     public void train() {
         var maxCounter = 0;
         var counter = 0;
+        var iterationsWithoutError = 0;
 
         for (int i = 0; i < MAX_ITERATIONS; i++) {
             var example = randomExample();
@@ -47,16 +48,33 @@ public class Perceptron {
 
             if (error == 0) {
                 counter++;
+                iterationsWithoutError++;
+
+                if (iterationsWithoutError > 1000) {
+                    if (counter > maxCounter) {
+                        pocket = Arrays.copyOf(weights, weights.length);
+                    }
+                    break;
+                }
+            } else {
+                improve(exampleRepresentation, error);
+
                 if (counter > maxCounter) {
                     maxCounter = counter;
                     pocket = Arrays.copyOf(weights, weights.length);
                 }
-            } else {
+
                 counter = 0;
-                improve(exampleRepresentation, error);
+                iterationsWithoutError = 0;
             }
         }
         weights = Arrays.copyOf(pocket, pocket.length);
+
+        if (pixelId == 2499) {
+            System.out.println(pixelId);
+            System.out.println("Learning finished");
+        }
+
         showLearningProcess();
     }
 
@@ -85,7 +103,6 @@ public class Perceptron {
                 iterator++;
             }
         }
-//        System.out.println(id);
-//        System.out.println("Perceptron with id = " + id + " guess " + iterator + "/" + examples.size() + " examples");
+//        System.out.println("Perceptron with id = " + pixelId + " guess " + iterator + "/" + examples.size() + " examples");
     }
 }
