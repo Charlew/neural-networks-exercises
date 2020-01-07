@@ -50,7 +50,7 @@ public class Perceptron {
                 counter++;
                 iterationsWithoutError++;
 
-                if (iterationsWithoutError > 1000) {
+                if (iterationsWithoutError > 1500) {
                     if (counter > maxCounter) {
                         pocket = Arrays.copyOf(weights, weights.length);
                     }
@@ -71,7 +71,6 @@ public class Perceptron {
         weights = Arrays.copyOf(pocket, pocket.length);
 
         if (pixelId == 2499) {
-            System.out.println(pixelId);
             System.out.println("Learning finished");
         }
 

@@ -78,7 +78,8 @@ public class Window extends PApplet {
     }
 
     private void fillPixelOnTheBoard() {
-        if (learnButton.mouseOver() || removeNoiseButton.mouseOver() || nextButton.mouseOver() || previousButton.mouseOver()) {
+        if (learnButton.mouseOver() || removeNoiseButton.mouseOver() || nextButton.mouseOver()
+            || previousButton.mouseOver() || refreshButton.mouseOver() || improveButton.mouseOver()) {
             return;
         }
 
@@ -167,29 +168,23 @@ public class Window extends PApplet {
         }
 
         if (removeNoiseButton.mouseOver()) {
-            System.out.println("remove noise");
-            System.out.println(Arrays.toString(leftBoardFilledPixels));
-            for (int i = 0; i < 2500; i++) {
-                if (perceptrons.get(i).guess(leftBoardFilledPixels) == 1) {
-                    fillRightBoardPixel(i);
-                } else {
-                    clearRightBoardPixel(i);
-                }
-            }
+            fillPixelsOnTheRightBoard(leftBoardFilledPixels);
             redraw();
         }
 
         if (improveButton.mouseOver()) {
-            for (int i = 0; i < 2500; i++) {
-//                for (int j = 0; j < 3; j++) {
-                    if (perceptrons.get(i).guess(rightBoardFilledPixels) == 1) {
-                        fillRightBoardPixel(i);
-                    } else {
-                        clearRightBoardPixel(i);
-                    }
-//                }
-            }
+            fillPixelsOnTheRightBoard(rightBoardFilledPixels);
             redraw();
+        }
+    }
+
+    private void fillPixelsOnTheRightBoard(int[] boardPixels) {
+        for (int i = 0; i < 2500; i++) {
+            if (perceptrons.get(i).guess(boardPixels) == 1) {
+                fillRightBoardPixel(i);
+            } else {
+                clearRightBoardPixel(i);
+            }
         }
     }
 
